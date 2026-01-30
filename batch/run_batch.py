@@ -8,11 +8,11 @@ def run_pdf_batch(input_dir: Path) -> Path:
     """
     Runs PDF batch pipeline and returns output Excel path.
     """
-    template = PROJECT_ROOT / "backend" / "templates" / "results_template.xlsx"
+    template = PROJECT_ROOT / "backend" / "templates" / "3rd Sem.xlsx"
     output_dir = PROJECT_ROOT / "backend" / "output"
     output_dir.mkdir(exist_ok=True)
 
-    output_excel = output_dir / "pdf_batch_results.xlsx"
+    output_excel = output_dir / "testing-27.xlsx"
 
     results = collect_batch_results(str(input_dir))
 
@@ -26,7 +26,7 @@ def run_pdf_batch(input_dir: Path) -> Path:
         results=results,
         template_path=str(template),
         output_path=str(output_excel),
-        start_row=3
+        start_row=6
     )
 
     return output_excel

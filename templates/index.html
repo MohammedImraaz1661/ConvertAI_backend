@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert.ai - Result Analyser</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet"/>
+
+    <!-- CSS: Full Stylesheet Inlined -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&display=swap');
+
+        :root {
+            --primary-blue: #0066CC;
+            --primary-dark: #004C99;
+            --text-dark: #111827;
+            --text-gray: #6B7280;
+            --bg-gradient-start: #89C4F4;
+            --bg-gradient-end: #ffffff;
+            --white: #ffffff;
+            --border-color: #E5E7EB;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Geist', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.5;
+            background: linear-gradient(180deg, #0077B6 0%, #FFFFFF 40%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Layout Utilities */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .btn {
+            display: inline-block; padding: 10px 24px; border-radius: 6px; font-weight: 500;
+            text-decoration: none; transition: all 0.2s ease; cursor: pointer; border: none; font-size: 14px;
+        }
+        .btn-primary { background-color: var(--primary-blue); color: var(--white); }
+        .btn-primary:hover { background-color: var(--primary-dark); transform: translateY(-1px); }
+        .btn-outline { background-color: transparent; border: 1px solid #D1D5DB; color: var(--text-gray); }
+        .btn-outline:hover { border-color: var(--text-dark); color: var(--text-dark); }
+
+        /* Navigation */
+        nav { padding: 20px 0; position: relative; z-index: 100; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: 700; color: var(--white); text-decoration: none; }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--white); font-size: 14px; font-weight: 500; opacity: 0.8; }
+        .nav-links a:hover { opacity: 1; }
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .login-link { text-decoration: none; color: var(--white); font-size: 14px; font-weight: 500; }
+
+        /* Mobile Menu Specifics */
+        .mobile-menu-btn { display: none; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-dark); }
+        .mobile-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 20px; flex-direction: column; gap: 15px; border-radius: 0 0 12px 12px; }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a { text-decoration: none; color: var(--text-dark); font-weight: 500; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+
+        /* Hero Section */
+        .hero { text-align: center; padding-top: 60px; padding-bottom: 80px; }
+        .hero h1 { font-family: 'EB Garamound', serif; font-size: 48px; color: var(--white); text-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .hero h1 span { font-family: 'EB Garamound', serif; display: block; }
+        .hero p { color: var(--white); font-size: 16px; margin-bottom: 40px; opacity: 0.9; padding: 0 10px; }
+
+        /* Upload Widget */
+        .upload-card { background: var(--white); max-width: 700px; margin: 0 auto; border-radius: 16px; padding: 30px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); text-align: left; }
+        .upload-header { font-size: 16px; font-weight: 600; margin-bottom: 20px; color: var(--text-dark); }
+        .drop-zone { border: 2px dashed #E5E7EB; border-radius: 12px; padding: 60px 20px; text-align: center; cursor: pointer; transition: border-color 0.3s ease, background-color 0.3s ease; margin-bottom: 20px; }
+        .drop-zone.drag-over { border-color: var(--primary-blue); background-color: #F0F9FF; }
+        .drop-icon { font-size: 24px; margin-bottom: 12px; color: var(--text-gray); }
+        .drop-text { font-size: 14px; color: var(--text-dark); }
+        .drop-text span { color: var(--primary-blue); text-decoration: underline; }
+        .file-info { display: none; margin-top: 10px; font-size: 14px; color: #059669; font-weight: 500; }
+        .upload-actions { display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid #F3F4F6; padding-top: 20px; }
+
+        /* Process Section */
+        .process { padding: 80px 0; }
+        .section-title { font-size: 36px; font-weight: 700; margin-bottom: 60px; color: var(--text-dark); }
+        .section-title span { color: var(--primary-blue); }
+        .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
+        .process-card { background: var(--white); padding: 30px; border-radius: 12px; border: 1px solid #F3F4F6; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; transition: transform 0.2s; }
+        .process-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .card-text { font-size: 12px; color: var(--text-gray); line-height: 1.6; margin-bottom: 20px; }
+        .card-number { font-size: 21px; color: var(--text-gray); font-weight: 500; margin-top: auto; }
+        .card-title { font-size: 20px; font-weight: 600; color: var(--text-dark); margin-left: 4px; }
+
+        /* FAQ Section */
+        .faq { padding: 80px 0; background: linear-gradient(180deg, #FFFFFF 0%, #F0F9FF 100%); }
+        .faq-list { max-width: 800px; }
+        .faq-item { border-bottom: 1px solid #E5E7EB; margin-bottom: 10px; }
+        .faq-question { font-family: 'Geist',sans-serif; width: 100%; text-align: left; background: none; border: none; padding: 24px 0; font-size: 18px; font-weight: 500; color: var(--text-dark); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; color: var(--text-gray); line-height: 1.6; }
+        .faq-answer.active { padding-bottom: 24px; }
+
+        /* Footer */
+        footer { background: var(--white); padding: 80px 0 40px; border-top: 1px solid #F3F4F6; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px; }
+        .footer-brand h3 { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+        .footer-col h4 { font-size: 16px; font-weight: 600; margin-bottom: 20px; color: var(--text-dark); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { text-decoration: none; color: var(--text-gray); font-size: 14px; transition: color 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary-blue); }
+        .footer-bottom { border-top: 1px solid #F3F4F6; padding-top: 30px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--text-gray); }
+        .social-icons { display: flex; gap: 20px; }
+        .social-icons a { color: var(--text-dark); font-size: 18px; text-decoration: none; }
+
+        #watermark { font-size: 0.8em; text-align: center; margin-bottom: 0; color: #6B7280; margin-top: 0;}
+        #watermark a {font-family: "Google Sans Code", monospace; color: #004C99; cursor: pointer;}
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links, .nav-right { display: none; }
+            .mobile-menu-btn { display: block; }
+            .hero h1 { font-size: 36px; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .section-title { font-size: 28px; }
+            .upload-card { padding: 20px; }
+            .drop-zone { padding: 40px 10px; }
+            .footer-bottom { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <a href="#" class="logo">Convert.ai</a>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Process</a></li>
+                <li><a href="#">Pricing</a></li>
+                <li><a href="#">Resources</a></li>
+            </ul>
+            <div class="nav-right">
+                <a href="#" class="login-link">Login</a>
+                <a href="#" class="btn btn-primary">Get Started</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#">Home</a>
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+            <a href="#">Resources</a>
+            <a href="#">Login</a>
+            <a href="#" style="color: var(--primary-blue);">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Results, huh?<br><span>Convert it to Excel.</span></h1>
+            <p>Have lots of data to convert to excel? <br>Just do it with a click.</p>
+
+            <!-- Upload Widget -->
+            <div class="upload-card">
+                <div class="upload-header">Upload files</div>
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-icon">📄</div>
+                    <div class="drop-text">Drag & Drop or <span>Choose file</span> to upload</div>
+                    <input type="file" id="fileInput" hidden multiple accept=".pdf,.jpg,.jpeg,.png">
+                    <div class="file-info" id="fileInfo"></div>
+                </div>
+                <div class="upload-actions">
+                    <button class="btn btn-outline" id="cancelBtn">Cancel</button>
+                    <button class="btn btn-primary" id="confirmBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process">
+        <div class="container">
+            <h2 class="section-title">Process<br>so <span>simple!</span></h2>
+            <div class="process-grid">
+                <div class="process-card">
+                    <p class="card-text">Upload scanned PDFs, JPGs, or PNGs. Our system automatically detects the document type and prepares for analysis without requiring templates.</p>
+                    <div class="card-footer"><span class="card-number">1</span><span class="card-title">Upload</span></div>
+                </div>
+                <div class="process-card">
+                    <p class="card-text">Powered by advanced OCR and AI models, the system accurately extracts student details, subjects, marks, totals, and percentages. Even max layouts and low-quality scans are handled with precision.</p>
+                    <div class="card-footer"><span class="card-number">2</span><span class="card-title">Extract</span></div>
+                </div>
+                <div class="process-card">
+                    <p class="card-text">Receive clean, structured ready-to-use results within seconds. View subject-wise performance and insights presented in a clear, readable design tailored for educators and institutions.</p>
+                    <div class="card-footer"><span class="card-number">3</span><span class="card-title">Analyze</span></div>
+                </div>
+                <div class="process-card">
+                    <p class="card-text">Easily export the analyzed data to Excel, CSV, or JSON with internal formatting, student rankings, and automated cleanup.</p>
+                    <div class="card-footer"><span class="card-number">4</span><span class="card-title">Export</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="container">
+            <h2 class="section-title">Frequently<br>asked <span>questions?</span></h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">What types of files does the Result Analyser support? <span>+</span></button>
+                    <div class="faq-answer"><p>We support PDF, JPG, PNG, and Excel files. Our OCR engine is optimized for both typed and handwritten academic documents.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">How accurate is the extraction? <span>+</span></button>
+                    <div class="faq-answer"><p>Our extraction is 99% accurate for clear documents. We also provide a verification tool to manually correct any uncertainties.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Is my uploaded data safe? <span>+</span></button>
+                    <div class="faq-answer"><p>Yes, all data is encrypted in transit and at rest. Files are automatically deleted from our servers after 24 hours.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Can I export the analysed results? <span>+</span></button>
+                    <div class="faq-answer"><p>Absolutely. You can export data to Excel (.xlsx), CSV, or directly to Google Sheets with one click.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Do I need technical knowledge to use this tool? <span>+</span></button>
+                    <div class="faq-answer"><p>No technical skills are required. If you can upload a file, you can use our tool.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand"><h3>Convert.ai</h3></div>
+                <div class="footer-col"><h4>Products</h4><ul><li><a href="#">Features</a></li><li><a href="#">How it works</a></li><li><a href="#">Integrations</a></li><li><a href="#">Pricing</a></li></ul></div>
+                <div class="footer-col"><h4>Use Case</h4><ul><li><a href="#">Students</a></li><li><a href="#">Teachers</a></li><li><a href="#">HR Teams</a></li><li><a href="#">Data Analyst</a></li></ul></div>
+                <div class="footer-col"><h4>Resources</h4><ul><li><a href="#">Documentation</a></li><li><a href="#">Tutorials</a></li><li><a href="#">Blog</a></li><li><a href="#">API Reference</a></li></ul></div>
+                <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Centre</a></li><li><a href="#">FAQ's</a></li><li><a href="#">Contact Support</a></li><li><a href="#">Report an Issue</a></li></ul></div>
+            </div>
+            <div class="footer-bottom">
+                <p>All rights reserved</p>
+                <div class="social-icons">
+                    <a href="#"><i class="ri-twitter-fill"></i></a>
+                    <a href="#"><i class="ri-github-fill"></i></a>
+                    <a href="#"><i class="ri-instagram-line"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <h4 id="watermark">Powered by Team <a href="./credits.html">TASK</a></h4>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        console.log("✅ Script Loaded Successfully 3.0");
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Mobile Menu & FAQ ---
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('active');
+                    mobileMenuBtn.textContent = mobileMenu.classList.contains('active') ? '✕' : '☰';
+                });
+            }
+
+            document.querySelectorAll('.faq-question').forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const icon = question.querySelector('span');
+                    if (answer.style.maxHeight) {
+                        answer.style.maxHeight = null;
+                        icon.textContent = '+';
+                    } else {
+                        document.querySelectorAll('.faq-answer').forEach(a => a.style.maxHeight = null);
+                        document.querySelectorAll('.faq-question span').forEach(s => s.textContent = '+');
+                        answer.style.maxHeight = answer.scrollHeight + "px";
+                        icon.textContent = '-';
+                    }
+                });
+            });
+
+            // --- 2. Upload Logic ---
+            const dropZone   = document.getElementById('dropZone');
+            const fileInput  = document.getElementById('fileInput');
+            const fileInfo   = document.getElementById('fileInfo');
+            const cancelBtn  = document.getElementById('cancelBtn');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const uploadActions = document.querySelector('.upload-actions');
+
+            let selectedFiles = [];
+
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) handleFiles([...e.target.files]);
+            });
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+
+            dropZone.addEventListener('dragover', () => dropZone.classList.add('drag-over'));
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+            dropZone.addEventListener('drop', (e) => {
+                const files = [...e.dataTransfer.files];
+                if (files.length > 0) handleFiles(files);
+                dropZone.classList.remove('drag-over');
+            });
+
+            function handleFiles(files) {
+                selectedFiles = files;
+                fileInfo.style.display = 'block';
+
+                const count = files.length;
+                fileInfo.innerHTML = `✅ ${count} file${count > 1 ? 's' : ''} selected`;
+
+                dropZone.querySelector('.drop-text').style.display = 'none';
+                dropZone.querySelector('.drop-icon').textContent   = '✅';
+            }
+
+            cancelBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectedFiles = [];
+                fileInput.value = '';
+                fileInfo.style.display = 'none';
+                fileInfo.innerHTML = '';
+                dropZone.querySelector('.drop-text').style.display = 'block';
+                dropZone.querySelector('.drop-icon').textContent   = '📄';
+
+                // Reset button text
+                confirmBtn.textContent = "Confirm";
+                confirmBtn.disabled = false;
+            });
+
+            // --- 3. CONFIRM / DOWNLOAD LOGIC ---
+            confirmBtn.addEventListener('click', async () => {
+
+                let isSuccess = false;
+                const originalText = "Confirm";
+
+                if (selectedFiles.length === 0 && fileInput.files.length > 0) {
+                    selectedFiles = [...fileInput.files];
+                }
+
+                if (selectedFiles.length === 0) {
+                    alert('Please select at least one file');
+                    return;
+                }
+
+                const formData = new FormData();
+                selectedFiles.forEach(file => formData.append('files', file));
+
+                confirmBtn.textContent = 'Processing...';
+                confirmBtn.disabled = true;
+
+                try {
+                    console.log("🚀 Sending request to server...");
+                    const response = await fetch('http://127.0.0.1:5000/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        const errData = await response.json().catch(() => ({}));
+                        throw new Error(errData.error || "Upload failed");
+                    }
+
+                    const blob = await response.blob();
+
+                    if (blob.size === 0) {
+                        throw new Error("File is empty!");
+                    }
+
+                    // AUTO DOWNLOAD (Invisible)
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'results.xlsx';
+                    document.body.appendChild(link);
+                    link.click();
+
+                    // Clean up the invisible link
+                    setTimeout(() => {
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(link);
+                    }, 100);
+
+                    // --- SUCCESS STATE CHANGE ---
+                    // isSuccess = true;
+                    // confirmBtn.textContent = "C";
+                    // console.log("✅ Process Complete");
+
+                } catch (err) {
+                    console.error("❌ Error:", err);
+                    alert('Error: ' + err.message);
+                    isSuccess = false;
+                } finally {
+                    // Only reset text if it FAILED. If success, keep "Download"
+                    if (!isSuccess) {
+                        confirmBtn.textContent = originalText;
+                    }
+                    confirmBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

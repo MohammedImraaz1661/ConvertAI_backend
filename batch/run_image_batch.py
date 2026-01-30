@@ -8,7 +8,7 @@ def run_image_batch(input_dir: Path) -> Path:
     """
     Runs image batch pipeline and returns output Excel path.
     """
-    template = PROJECT_ROOT / "backend" / "templates" / "results_template.xlsx"
+    template = PROJECT_ROOT / "backend" / "templates" / "5th Sem.xlsx"
     output_dir = PROJECT_ROOT / "backend" / "output"
     output_dir.mkdir(exist_ok=True)
 

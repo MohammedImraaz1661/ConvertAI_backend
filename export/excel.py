@@ -8,7 +8,7 @@ def write_result_excel(
     result: dict,
     template_path: str,
     output_path: str,
-    row_index: int = 3
+    row_index: int = 6
 ):
     """
     Writes a single VTU result into the Excel template.
@@ -29,7 +29,8 @@ def write_result_excel(
             },
             "subjects": result["subjects"]
         },
-        row_index=row_index
+        row_index=row_index,
+        sl_no=1
     )
 
     # 3️⃣ Save output
