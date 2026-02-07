@@ -399,7 +399,8 @@
 
                 try {
                     console.log("🚀 Sending request to server...");
-                    const response = await fetch('/upload', {
+                    const API_BASE = "https://convertai-backend-e3tr.onrender.com";
+                    fetch('${API_BASE}/upload', {
                         method: 'POST',
                         body: formData
                     });
