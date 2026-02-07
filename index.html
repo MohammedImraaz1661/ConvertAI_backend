@@ -9,6 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet"/>
 
+    <script>
+        const API_BASE = "https://convertai-backend-e3tr.onrender.com";
+    </script>
+
     <!-- CSS: Full Stylesheet Inlined -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
@@ -278,176 +282,134 @@
     <!-- <h4 id="watermark">Powered by Team <a href="./credits.html">TASK</a></h4> -->
 
     <!-- JAVASCRIPT -->
-    <script>
-        console.log("✅ Script Loaded Successfully 3.0");
+   <script>
+    console.log("✅ Script Loaded Successfully 3.0");
 
-        document.addEventListener('DOMContentLoaded', () => {
+    // const API_BASE = "https://convertai-backend-e3tr.onrender.com";
 
-            // --- 1. Mobile Menu & FAQ ---
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const mobileMenu = document.getElementById('mobileMenu');
-            if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('active');
-                    mobileMenuBtn.textContent = mobileMenu.classList.contains('active') ? '✕' : '☰';
-                });
-            }
+    document.addEventListener('DOMContentLoaded', () => {
 
-            document.querySelectorAll('.faq-question').forEach(question => {
-                question.addEventListener('click', () => {
-                    const answer = question.nextElementSibling;
-                    const icon = question.querySelector('span');
-                    if (answer.style.maxHeight) {
-                        answer.style.maxHeight = null;
-                        icon.textContent = '+';
-                    } else {
-                        document.querySelectorAll('.faq-answer').forEach(a => a.style.maxHeight = null);
-                        document.querySelectorAll('.faq-question span').forEach(s => s.textContent = '+');
-                        answer.style.maxHeight = answer.scrollHeight + "px";
-                        icon.textContent = '-';
-                    }
-                });
+        // --- 1. Mobile Menu & FAQ ---
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+                mobileMenuBtn.textContent = mobileMenu.classList.contains('active') ? '✕' : '☰';
             });
+        }
 
-            // --- 2. Upload Logic ---
-            const dropZone   = document.getElementById('dropZone');
-            const fileInput  = document.getElementById('fileInput');
-            const fileInfo   = document.getElementById('fileInfo');
-            const cancelBtn  = document.getElementById('cancelBtn');
-            const confirmBtn = document.getElementById('confirmBtn');
-            const uploadActions = document.querySelector('.upload-actions');
-
-            let selectedFiles = [];
-
-            dropZone.addEventListener('click', () => fileInput.click());
-
-            fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) handleFiles([...e.target.files]);
-            });
-
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-            });
-
-            dropZone.addEventListener('dragover', () => dropZone.classList.add('drag-over'));
-            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-            dropZone.addEventListener('drop', (e) => {
-                const files = [...e.dataTransfer.files];
-                if (files.length > 0) handleFiles(files);
-                dropZone.classList.remove('drag-over');
-            });
-
-            function handleFiles(files) {
-                selectedFiles = files;
-                fileInfo.style.display = 'block';
-
-                const count = files.length;
-                fileInfo.innerHTML = `✅ ${count} file${count > 1 ? 's' : ''} selected`;
-
-                dropZone.querySelector('.drop-text').style.display = 'none';
-                dropZone.querySelector('.drop-icon').textContent   = '✅';
-            }
-
-            cancelBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                selectedFiles = [];
-                fileInput.value = '';
-                fileInfo.style.display = 'none';
-                fileInfo.innerHTML = '';
-                dropZone.querySelector('.drop-text').style.display = 'block';
-                dropZone.querySelector('.drop-icon').textContent   = '📄';
-                document.getElementById('templateSelect').value = "";
-
-                // Reset button text
-                confirmBtn.textContent = "Confirm";
-                confirmBtn.disabled = false;
-            });
-
-            // --- 3. CONFIRM / DOWNLOAD LOGIC ---
-            confirmBtn.addEventListener('click', async () => {
-
-                let isSuccess = false;
-                const originalText = "Confirm";
-
-                if (selectedFiles.length === 0 && fileInput.files.length > 0) {
-                    selectedFiles = [...fileInput.files];
-                }
-
-                if (selectedFiles.length === 0) {
-                    alert('Please select at least one file');
-                    return;
-                }
-
-                const templateValue = document.getElementById('templateSelect').value;
-
-                if (!templateValue) {
-                     alert("Please select a template / semester");
-                    confirmBtn.textContent = "Confirm";
-                    confirmBtn.disabled = false;
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append("semester", templateValue);
-                selectedFiles.forEach(file => formData.append('files', file));
-
-                confirmBtn.textContent = 'Processing...';
-                confirmBtn.disabled = true;
-
-                try {
-                    console.log("🚀 Sending request to server...");
-                    const API_BASE = "https://convertai-backend-e3tr.onrender.com";
-                    fetch('${API_BASE}/upload', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!response.ok) {
-                        const errData = await response.json().catch(() => ({}));
-                        throw new Error(errData.error || "Upload failed");
-                    }
-
-                    const blob = await response.blob();
-
-                    if (blob.size === 0) {
-                        throw new Error("File is empty!");
-                    }
-
-                    // AUTO DOWNLOAD (Invisible)
-                    const url = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = 'results.xlsx';
-                    document.body.appendChild(link);
-                    link.click();
-
-                    // Clean up the invisible link
-                    setTimeout(() => {
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(link);
-                    }, 100);
-
-                    // --- SUCCESS STATE CHANGE ---
-                    // isSuccess = true;
-                    // confirmBtn.textContent = "C";
-                    // console.log("✅ Process Complete");
-
-                } catch (err) {
-                    console.error("❌ Error:", err);
-                    alert('Error: ' + err.message);
-                    isSuccess = false;
-                } finally {
-                    // Only reset text if it FAILED. If success, keep "Download"
-                    if (!isSuccess) {
-                        confirmBtn.textContent = originalText;
-                    }
-                    confirmBtn.disabled = false;
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const icon = question.querySelector('span');
+                if (answer.style.maxHeight) {
+                    answer.style.maxHeight = null;
+                    icon.textContent = '+';
+                } else {
+                    document.querySelectorAll('.faq-answer').forEach(a => a.style.maxHeight = null);
+                    document.querySelectorAll('.faq-question span').forEach(s => s.textContent = '+');
+                    answer.style.maxHeight = answer.scrollHeight + "px";
+                    icon.textContent = '-';
                 }
             });
         });
-    </script>
+
+        // --- 2. Upload Logic ---
+        const dropZone   = document.getElementById('dropZone');
+        const fileInput  = document.getElementById('fileInput');
+        const fileInfo   = document.getElementById('fileInfo');
+        const cancelBtn  = document.getElementById('cancelBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
+
+        let selectedFiles = [];
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFiles([...e.target.files]);
+        });
+
+        function handleFiles(files) {
+            selectedFiles = files;
+            fileInfo.style.display = 'block';
+            fileInfo.innerHTML = `✅ ${files.length} file${files.length > 1 ? 's' : ''} selected`;
+        }
+
+        cancelBtn.addEventListener('click', () => {
+            selectedFiles = [];
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            confirmBtn.textContent = "Confirm";
+            confirmBtn.disabled = false;
+            document.getElementById('templateSelect').value = "";
+        });
+
+        // --- 3. CONFIRM / DOWNLOAD LOGIC ---
+        confirmBtn.addEventListener('click', async () => {
+
+            const originalText = "Confirm";
+
+            if (selectedFiles.length === 0) {
+                alert('Please select at least one file');
+                return;
+            }
+
+            const templateValue = document.getElementById('templateSelect').value;
+            if (!templateValue) {
+                alert("Please select a template / semester");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("semester", templateValue);
+            selectedFiles.forEach(file => formData.append('files', file));
+
+            confirmBtn.textContent = 'Processing...';
+            confirmBtn.disabled = true;
+
+            try {
+                console.log("🚀 Sending request to server...");
+
+                const response = await fetch(`${API_BASE}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error || "Upload failed");
+                }
+
+                const blob = await response.blob();
+                if (blob.size === 0) {
+                    throw new Error("File is empty!");
+                }
+
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'results.xlsx';
+                document.body.appendChild(link);
+                link.click();
+
+                setTimeout(() => {
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(link);
+                }, 100);
+
+                console.log("✅ Download started");
+
+            } catch (err) {
+                console.error("❌ Error:", err);
+                alert('Error: ' + err.message);
+            } finally {
+                confirmBtn.textContent = originalText;
+                confirmBtn.disabled = false;
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
