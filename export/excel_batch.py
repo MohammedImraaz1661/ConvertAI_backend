@@ -9,7 +9,7 @@ def write_batch_results_excel(
     output_path: str,
     start_row: int = 6
 ):
-    wb, ws, subject_column_map = load_template(template_path)
+    wb, ws, subject_column_map, total_col, percentage_col = load_template(template_path)
 
     row = start_row
     sl_no = 1
@@ -25,11 +25,12 @@ def write_batch_results_excel(
                 "subjects": result["subjects"]
             },
             row_index=row,
-            sl_no=sl_no
+            sl_no=sl_no,
+            total_sum_col=total_col,
+            percentage_col=percentage_col
         )
 
         topper_tracker.append((row, numeric_total))
-
         row += 1
         sl_no += 1
 
@@ -39,59 +40,35 @@ def write_batch_results_excel(
         for col in range(1, ws.max_column + 1):
             ws.cell(row=topper_row, column=col).fill = TOPPER_FILL
 
-    for col in range(1, ws.max_column + 1):
-        ws.cell(row=topper_row, column=col).fill = TOPPER_FILL
-
+    # 🔤 Bold important columns
     bold_font = Font(bold=True)
+    BOLD_COLUMNS = {1, 2, 3, total_col, percentage_col}
 
-    # Fixed columns to bold
-    BOLD_COLUMNS = {1, 2, 3, 31, 32}  # SL No, USN, Name, Grand Total, Percentage
-
-    # Add all subject TOTAL columns dynamically
     for cols in subject_column_map.values():
         if "TOTAL" in cols:
             BOLD_COLUMNS.add(cols["TOTAL"])
 
-    # Apply bold styling
-    for row in ws.iter_rows():
-        for cell in row:
+    for row_cells in ws.iter_rows():
+        for cell in row_cells:
             if cell.column in BOLD_COLUMNS:
                 cell.font = bold_font
 
+    # 🗂 Legend
     LEGEND_FAIL = PatternFill(start_color="FFD60A", end_color="FFD60A", fill_type="solid")
     LEGEND_PE = PatternFill(start_color="CFE2F3", end_color="CFE2F3", fill_type="solid")
     LEGEND_NSS = PatternFill(start_color="EAD1DC", end_color="EAD1DC", fill_type="solid")
     LEGEND_TOPPER = PatternFill(start_color="FCE5CD", end_color="FCE5CD", fill_type="solid")
 
-    bold_font = Font(bold=True)
+    legend_col = ws.max_column + 2
+    legend_row = start_row
 
-    #Legend Position
-    legend_col = 37 #AI
-    legend_row = 61
+    title = ws.cell(row=legend_row, column=legend_col)
+    title.value = "LEGEND"
+    title.font = Font(bold=True)
 
-    #Title
-    title_cell = ws.cell(row=legend_row, column=legend_col)
-    title_cell.value = "LEGEND"
-    title_cell.font = bold_font
-
-    # Subject fail
-    cell = ws.cell(row=legend_row + 2, column=legend_col)
-    cell.value = "Subject Fail"
-    cell.fill = LEGEND_FAIL
-
-    # PE
-    cell = ws.cell(row=legend_row + 3, column=legend_col)
-    cell.value = "(BPEK559)"
-    cell.fill = LEGEND_PE
-
-    # NSS
-    cell = ws.cell(row=legend_row + 4, column=legend_col)
-    cell.value = "(BNSK559)"
-    cell.fill = LEGEND_NSS
-
-    # Topper
-    cell = ws.cell(row=legend_row + 5, column=legend_col)
-    cell.value = "Class Topper"
-    cell.fill = LEGEND_TOPPER
+    ws.cell(row=legend_row + 2, column=legend_col, value="Subject Fail").fill = LEGEND_FAIL
+    ws.cell(row=legend_row + 3, column=legend_col, value="(BPEK559)").fill = LEGEND_PE
+    ws.cell(row=legend_row + 4, column=legend_col, value="(BNSK559)").fill = LEGEND_NSS
+    ws.cell(row=legend_row + 5, column=legend_col, value="Class Topper").fill = LEGEND_TOPPER
 
     wb.save(output_path)

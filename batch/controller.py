@@ -4,6 +4,8 @@ from backend.services.vtu_ocr_parser import parse_vtu_image
 
 TARGET_USN = "4DM23AI039"
 
+# NOTE: In V1 deployment, this is used in PDF-only mode.
+
 
 def collect_batch_results(input_path: str) -> list[dict]:
     results = []

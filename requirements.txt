@@ -1,9 +1,6 @@
 flask
 flask-cors
 gunicorn
-python-doctr
-opencv-python
-numpy
-pillow
-pandas
 openpyxl
+pdfminer.six
+pillow

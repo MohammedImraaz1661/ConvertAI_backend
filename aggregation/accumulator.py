@@ -1,3 +1,10 @@
+"""
+⚠️ OCR / IMAGE PIPELINE MODULE
+Not used in PDF-only V1 deployment.
+Safe to ignore.
+"""
+
+
 class ResultAccumulator:
     def __init__(self):
         self.current_result = None

@@ -1,3 +1,6 @@
+# NOTE: OCR pipeline uses `code`; PDF pipeline uses `subject_code`
+# Do not mix without normalization
+
 import re
 from typing import List, Dict
 from itertools import permutations

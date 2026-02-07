@@ -15,9 +15,9 @@ def write_result_excel(
     """
 
     # 1️⃣ Load template & subject map
-    wb, ws, subject_column_map = load_template(template_path)
+    wb, ws, subject_column_map, total_col, percentage_col = load_template(template_path)
 
-    # 2️⃣ Write data
+    # 2️⃣ Write student result
     write_student_result(
         wb=wb,
         ws=ws,
@@ -30,7 +30,9 @@ def write_result_excel(
             "subjects": result["subjects"]
         },
         row_index=row_index,
-        sl_no=1
+        sl_no=1,
+        total_sum_col=total_col,
+        percentage_col=percentage_col
     )
 
     # 3️⃣ Save output

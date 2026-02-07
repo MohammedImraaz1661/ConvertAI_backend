@@ -1,3 +1,10 @@
+"""
+⚠️ OCR / IMAGE PIPELINE MODULE
+Not used in PDF-only V1 deployment.
+Safe to ignore.
+"""
+
+
 def dedupe_subjects(subjects):
     """
     Deduplicate subjects by subject code.

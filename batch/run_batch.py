@@ -1,42 +1,34 @@
 from pathlib import Path
+from datetime import datetime
+
 from backend.batch.controller import collect_batch_results
 from backend.export.excel_batch import write_batch_results_excel
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-def run_pdf_batch(input_dir: Path) -> Path:
+def run_pdf_batch(input_dir: Path, template_path: Path) -> Path:
     """
     Runs PDF batch pipeline and returns output Excel path.
     """
-    template = PROJECT_ROOT / "backend" / "templates" / "3rd Sem.xlsx"
-    output_dir = PROJECT_ROOT / "backend" / "output"
-    output_dir.mkdir(exist_ok=True)
 
-    output_excel = output_dir / "testing-27.xlsx"
+    output_dir = PROJECT_ROOT / "output"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_excel = output_dir / f"batch_result_{timestamp}.xlsx"
 
     results = collect_batch_results(str(input_dir))
 
     if not results:
         raise ValueError("No valid PDF results found")
 
-    # Sort by USN
-    results.sort(key=lambda r: r["header"].get("usn") or "ZZZZZZZZZZ")
+    results.sort(key=lambda r: r["header"].get("usn") or "ZZZZZZZZ")
 
     write_batch_results_excel(
         results=results,
-        template_path=str(template),
+        template_path=str(template_path),
         output_path=str(output_excel),
         start_row=6
     )
 
     return output_excel
-
-
-def main():
-    input_dir = Path("backend/batch/input/pdf")
-    output_excel = run_pdf_batch(input_dir)
-    print(f"✅ PDF batch Excel generated: {output_excel}")
-
-
-if __name__ == "__main__":
-    main()

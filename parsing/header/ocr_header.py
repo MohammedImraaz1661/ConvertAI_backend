@@ -5,6 +5,8 @@ Purpose:
 - Deterministic extraction of header fields (USN, Student Name)
 - Robust extraction of subject rows
 - Designed specifically for VTU result layouts (future-safe)
+# NOTE: OCR pipeline uses `code`; PDF pipeline uses `subject_code`
+# Do not mix without normalization
 """
 
 import re
