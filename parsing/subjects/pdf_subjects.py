@@ -1,5 +1,5 @@
 from parsing.header.pdf_header import extract_header
-from app.regex_engine.confidence import (
+from regex_engine.confidence import (
     compute_confidence,
     flag_from_confidence
 )
@@ -29,7 +29,7 @@ def run_regex_pipeline(text: str) -> dict:
 # regex_engine/subject_regex.py
 
 import re
-from app.core.config import SUBJECT_CODE_REGEX, RESULT_REGEX
+from core.config import SUBJECT_CODE_REGEX, RESULT_REGEX
 
 SUBJECT_ROW_PATTERN = re.compile(
     rf"({SUBJECT_CODE_REGEX})\s+(\d+)\s+(\d+)\s+(\d+)\s+({RESULT_REGEX})",
