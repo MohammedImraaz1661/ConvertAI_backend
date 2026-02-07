@@ -1,6 +1,6 @@
-from backend.export.template_loader import load_template
+from export.template_loader import load_template
 from openpyxl.styles import Font, PatternFill
-from backend.export.writer import write_student_result, TOPPER_FILL
+from export.writer import write_student_result, TOPPER_FILL
 
 
 def write_batch_results_excel(

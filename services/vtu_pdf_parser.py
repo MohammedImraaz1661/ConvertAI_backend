@@ -1,6 +1,6 @@
-from backend.ingestion.pdf.extractor import extract_text_from_pdf
-from backend.ingestion.pdf.normalizer import normalize_text
-from backend.parsing.subjects.pdf_subjects import run_regex_pipeline
+from ingestion.pdf.extractor import extract_text_from_pdf
+from ingestion.pdf.normalizer import normalize_text
+from parsing.subjects.pdf_subjects import run_regex_pipeline
 
 TARGET_USN = "4DM23AI039"
 

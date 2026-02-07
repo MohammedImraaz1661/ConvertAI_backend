@@ -5,7 +5,7 @@ import shutil
 import uuid
 import os
 
-from backend.batch.run_batch import run_pdf_batch
+from batch.run_batch import run_pdf_batch
 
 # --------------------
 # App setup

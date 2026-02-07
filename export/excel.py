@@ -1,7 +1,7 @@
 # backend/export/excel.py
 
-from backend.export.template_loader import load_template
-from backend.export.writer import write_student_result
+from export.template_loader import load_template
+from export.writer import write_student_result
 
 
 def write_result_excel(

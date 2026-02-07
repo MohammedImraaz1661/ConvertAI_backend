@@ -1,4 +1,4 @@
-from backend.parsing.header.pdf_header import extract_header
+from parsing.header.pdf_header import extract_header
 from app.regex_engine.confidence import (
     compute_confidence,
     flag_from_confidence

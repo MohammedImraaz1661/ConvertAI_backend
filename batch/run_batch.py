@@ -1,8 +1,8 @@
 from pathlib import Path
 from datetime import datetime
 
-from backend.batch.controller import collect_batch_results
-from backend.export.excel_batch import write_batch_results_excel
+from batch.controller import collect_batch_results
+from export.excel_batch import write_batch_results_excel
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 

@@ -1,6 +1,6 @@
 from pathlib import Path
-from backend.services.vtu_pdf_parser import parse_vtu_pdf
-from backend.services.vtu_ocr_parser import parse_vtu_image
+from services.vtu_pdf_parser import parse_vtu_pdf
+from services.vtu_ocr_parser import parse_vtu_image
 
 TARGET_USN = "4DM23AI039"
 

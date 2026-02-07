@@ -1,6 +1,6 @@
 from pathlib import Path
 import re
-from backend.services.vtu_ocr_parser import parse_vtu_image
+from services.vtu_ocr_parser import parse_vtu_image
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png"}
 
