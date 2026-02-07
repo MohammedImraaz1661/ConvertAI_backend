@@ -4,3 +4,4 @@ gunicorn
 openpyxl
 pdfminer.six
 pillow
+pdfplumber
