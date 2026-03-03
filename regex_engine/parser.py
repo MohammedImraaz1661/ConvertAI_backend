@@ -1,5 +1,5 @@
-from app.regex_engine.header_regex import extract_header
-from app.regex_engine.subject_regex import extract_subjects
+from regex_engine.header_regex import extract_header
+from regex_engine.subject_regex import extract_subjects
 from app.regex_engine.confidence import (
     compute_confidence,
     flag_from_confidence
