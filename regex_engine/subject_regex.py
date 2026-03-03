@@ -1,7 +1,7 @@
 # regex_engine/subject_regex.py
 
 import re
-from app.core.config import SUBJECT_CODE_REGEX, RESULT_REGEX
+from core.config import SUBJECT_CODE_REGEX, RESULT_REGEX
 
 # 1️⃣ Subject code pattern (order matters)
 SUBJECT_CODE_PATTERN = re.compile(
