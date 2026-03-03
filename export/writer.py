@@ -134,9 +134,11 @@ def write_student_result(
         ext_cell.value = activity_subject["external"]
         tot_cell.value = activity_subject["total"]
 
-        if activity_subject["subject_code"] == "BPEK559":
+        code = activity_subject["subject_code"]
+
+        if code.startswith("BPEK"):
             fill = PE_FILL
-        elif activity_subject["subject_code"] == "BNSK559":
+        elif code.startswith("BNSK"):
             fill = NSS_FILL
         else:
             fill = None

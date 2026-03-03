@@ -9,7 +9,6 @@ from app.regex_engine.confidence import (
 def run_regex_pipeline(text: str) -> dict:
     header = extract_header(text)
     subjects = extract_subjects(text)
-
     processed_subjects = []
 
     for subj in subjects:

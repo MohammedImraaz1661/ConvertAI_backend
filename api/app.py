@@ -35,6 +35,14 @@ TEMPLATE_MAP = {
 }
 
 # --------------------
+# Health Route (NEW)
+# --------------------
+@app.route("/health", methods=["GET"])
+def health():
+    return {"status": "ok"}, 200
+
+
+# --------------------
 # Routes
 # --------------------
 @app.route("/upload", methods=["POST"])
@@ -85,12 +93,10 @@ def upload():
         )
 
     except Exception as e:
-        # 🔥 CRITICAL: log full traceback in Render
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
     finally:
-        # Cleanup AFTER response is prepared
         if session_dir and session_dir.exists():
             shutil.rmtree(session_dir, ignore_errors=True)
 
